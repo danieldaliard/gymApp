@@ -1,0 +1,319 @@
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: visible;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.toggle {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.body {
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.exerciseList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.exerciseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  color: var(--text);
+  transition: background 0.15s;
+}
+
+.exerciseItem:hover {
+  background: var(--bg-subtle);
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 10px 4px;
+  font-style: italic;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  border-radius: 4px;
+}
+
+.iconBtn:hover { opacity: 1; background: var(--danger-light); }
+
+/* Autocomplete wrapper */
+.autocompleteWrapper {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.addForm {
+  display: flex;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+}
+
+.addBtn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.addBtn:hover { opacity: 0.85; }
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  list-style: none;
+  padding: 4px;
+  z-index: 50;
+}
+
+.suggestion {
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.suggestion:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn {
+  padding: 11px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn:not(:disabled):active { transform: scale(0.98); }
+
+.startBtn {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.startBtn:hover:not(:disabled) { opacity: 0.9; }
+
+.deleteBtn {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.deleteBtn:hover { background: var(--danger-light); }
+
+.addExBtn {
+  width: 100%;
+  background: var(--accent-light);
+  color: var(--accent);
+  border: 1.5px dashed var(--accent);
+  margin-bottom: 12px;
+}
+.addExBtn:hover { background: var(--accent); color: #fff; border-style: solid; }
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.toggle {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.body {
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.exerciseList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.exerciseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+  color: var(--text);
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 8px 0;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.iconBtn:hover { opacity: 1; }
+
+.addForm {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+}
+
+.addBtn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn:disabled { opacity: 0.4; cursor: default; }
+
+.startBtn {
+  background: var(--accent);
+  color: #fff;
+}
+
+.deleteBtn {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}

@@ -1,0 +1,127 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.selectorWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+
+.select {
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 15px;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.statCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.statLabel {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.statValue {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.chart {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.hint {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 20px 0;
+  line-height: 1.6;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.histTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.histRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.histDate {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.histSets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.histSet {
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+

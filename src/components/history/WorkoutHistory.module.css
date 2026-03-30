@@ -1,0 +1,104 @@
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.routineName {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.date {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.toggle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.detail {
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+}
+
+.exBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.exName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.set {
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.noSets {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.deleteBtn {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px 20px;
+  font-size: 16px;
+  line-height: 1.8;
+}

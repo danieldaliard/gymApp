@@ -1,0 +1,89 @@
+/* =====================================================
+   GymTracker — Design System Tokens
+   Light mode is the default; dark activates via data-theme="dark"
+   ===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── Light (default) ─────────────────────────────── */
+:root {
+  --bg:           #f0f2f5;
+  --bg-card:      #ffffff;
+  --bg-subtle:    #f7f8fa;
+  --text:         #111827;
+  --text-muted:   #6b7280;
+  --border:       #e5e7eb;
+  --accent:       #4f46e5;   /* indigo-600 */
+  --accent-light: #eef2ff;   /* indigo-50  */
+  --success:      #16a34a;
+  --success-light:#dcfce7;
+  --danger:       #dc2626;
+  --danger-light: #fee2e2;
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:    0 4px 12px rgba(0,0,0,.10);
+  --radius:       12px;
+  --radius-sm:    8px;
+
+  font-family: 'Inter', system-ui, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Dark ─────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:           #0d0f14;
+  --bg-card:      #181b23;
+  --bg-subtle:    #1e2029;
+  --text:         #f1f5f9;
+  --text-muted:   #94a3b8;
+  --border:       #2a2d38;
+  --accent:       #818cf8;
+  --accent-light: #1e1b4b;
+  --success:      #4ade80;
+  --success-light:#052e16;
+  --danger:       #f87171;
+  --danger-light: #450a0a;
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:    0 4px 12px rgba(0,0,0,.4);
+}
+
+/* =====================================================
+   Reset / Base
+   ===================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.2s, color 0.2s;
+}
+
+#root { min-height: 100dvh; }
+
+.app-root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+button { font-family: inherit; }
+
+input, select, textarea {
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* Scrollbar (webkit) */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
