@@ -184,3 +184,18 @@
   opacity: 0.7;
 }
 
+.routineSection {
+  margin-bottom: 20px;
+}
+
+.routineSectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+

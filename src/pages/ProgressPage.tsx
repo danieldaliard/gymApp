@@ -1,15 +1,15 @@
 import ProgressView from '../components/progress/ProgressView';
-import type { WorkoutLog } from '../models';
+import type { WorkoutSession } from '../models';
 import styles from './Page.module.css';
 
 interface ProgressPageProps {
-  logs: WorkoutLog[];
+  sessions: WorkoutSession[];
 }
 
-export default function ProgressPage({ logs }: ProgressPageProps) {
+export default function ProgressPage({ sessions }: ProgressPageProps) {
   return (
     <div className={styles.page}>
-      <ProgressView logs={logs} />
+      <ProgressView sessions={sessions} />
     </div>
   );
 }

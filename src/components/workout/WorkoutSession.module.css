@@ -7,23 +7,40 @@
 .topBar {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   padding: 4px 0 8px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 4px;
 }
 
 .title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--text);
-  margin: 0;
+  margin: 0 0 2px;
 }
 
-.date {
+.subtitle {
   font-size: 13px;
   color: var(--text-muted);
-  font-weight: 500;
+}
+
+.timerBadge {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  border-radius: 10px;
+  padding: 4px 12px;
+  min-width: 70px;
+  text-align: center;
+}
+
+.progressInfo {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 0 2px;
 }
 
 .exercises {
@@ -42,9 +59,26 @@
 
 .exHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 10px;
   margin-bottom: 10px;
+}
+
+.gifThumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--border);
+}
+
+.exInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
 }
 
 .exName {

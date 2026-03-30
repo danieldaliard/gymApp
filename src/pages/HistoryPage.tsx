@@ -1,29 +1,28 @@
 import WorkoutHistory from '../components/history/WorkoutHistory';
-import type { WorkoutLog } from '../models';
+import { useLanguage } from '../i18n';
+import type { WorkoutSession } from '../models';
 import styles from './Page.module.css';
 
 interface HistoryPageProps {
-  logs: WorkoutLog[];
-  onDeleteLog: (id: string) => void;
+  sessions: WorkoutSession[];
+  onDeleteSession: (id: string) => void;
 }
 
-export default function HistoryPage({ logs, onDeleteLog }: HistoryPageProps) {
+export default function HistoryPage({ sessions, onDeleteSession }: HistoryPageProps) {
+  const { t } = useLanguage();
   return (
     <div className={styles.page}>
-      {logs.length === 0 ? (
+      {sessions.length === 0 ? (
         <div className={styles.emptyState}>
           <span className={styles.emptyIcon}>📅</span>
-          <h3 className={styles.emptyTitle}>Sin entrenamientos registrados</h3>
-          <p className={styles.emptyText}>
-            Cuando completes tu primer entrenamiento desde la pestaña <strong>Entrenar</strong>,
-            va a aparecer acá con todos los detalles.
-          </p>
-          <a href="/workout" className={styles.emptyAction}>Ir a Entrenar →</a>
+          <h3 className={styles.emptyTitle}>{t.history_empty_title}</h3>
+          <p className={styles.emptyText}>{t.history_empty_sub}</p>
+          <a href="/workout" className={styles.emptyAction}>{t.history_go_workout}</a>
         </div>
       ) : (
         <>
-          <p className={styles.count}>{logs.length} entrenamiento{logs.length !== 1 ? 's' : ''} registrado{logs.length !== 1 ? 's' : ''}</p>
-          <WorkoutHistory logs={logs} onDelete={onDeleteLog} />
+          <p className={styles.count}>{sessions.length} entrenamiento{sessions.length !== 1 ? 's' : ''}</p>
+          <WorkoutHistory sessions={sessions} onDelete={onDeleteSession} />
         </>
       )}
     </div>

@@ -19,7 +19,7 @@ import {
   BODY_PART_COLORS,
 } from '../services/exerciseApiService';
 import type { ApiExercise, ApiPage } from '../services/exerciseApiService';
-import type { WorkoutLog } from '../models';
+import type { WorkoutSession } from '../models';
 
 const PAGE_SIZE = 25;
 
@@ -44,7 +44,7 @@ export interface UseExercisesReturn {
   loadMore: () => void;
 }
 
-export function useExercises(logs: WorkoutLog[] = []): UseExercisesReturn {
+export function useExercises(sessions: WorkoutSession[] = []): UseExercisesReturn {
   const [exercises, setExercises] = useState<ApiExercise[]>([]);
   const [bodyParts, setBodyParts] = useState<BodyPartOption[]>([]);
   const [search, setSearch] = useState('');
@@ -59,10 +59,10 @@ export function useExercises(logs: WorkoutLog[] = []): UseExercisesReturn {
 
   // Build a set of previously-used exercise names for sort prioritisation
   const usedNames = useMemo<Set<string>>(() => {
-    const s = new Set<string>();
-    logs.forEach((l) => l.exercises.forEach((e) => s.add(e.exerciseName.toLowerCase())));
-    return s;
-  }, [logs]);
+    const names = new Set<string>();
+    sessions.forEach((sess) => sess.exercises.forEach((e) => names.add(e.name.toLowerCase())));
+    return names;
+  }, [sessions]);
 
   // Load body parts list once on mount
   useEffect(() => {

@@ -1,14 +1,17 @@
 import { NavLink } from 'react-router-dom';
+import { useLanguage } from '../../i18n';
 import styles from './BottomNav.module.css';
 
-const NAV_ITEMS = [
-  { to: '/', label: 'Rutinas', icon: '📋' },
-  { to: '/workout', label: 'Entrenar', icon: '💪' },
-  { to: '/history', label: 'Historial', icon: '📅' },
-  { to: '/progress', label: 'Progreso', icon: '📈' },
-];
-
 export default function BottomNav() {
+  const { t } = useLanguage();
+
+  const NAV_ITEMS = [
+    { to: '/',         label: t.nav_routines, icon: '📋' },
+    { to: '/workout',  label: t.nav_workout,  icon: '💪' },
+    { to: '/history',  label: t.nav_history,  icon: '📅' },
+    { to: '/progress', label: t.nav_progress, icon: '📈' },
+  ];
+
   return (
     <nav className={styles.nav}>
       {NAV_ITEMS.map(({ to, label, icon }) => (

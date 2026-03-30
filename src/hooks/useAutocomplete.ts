@@ -1,21 +1,16 @@
 import { useMemo } from 'react';
-import type { WorkoutLog } from '../models';
+import type { WorkoutSession } from '../models';
 
 /**
- * Returns a filtered list of exercise name suggestions based on the current input.
+ * Returns exercise name suggestions based on past sessions.
+ * Useful as a fallback for custom exercise names.
  */
-export function useAutocomplete(logs: WorkoutLog[], input: string): string[] {
-  const suggestions = useMemo((): string[] => {
+export function useAutocomplete(sessions: WorkoutSession[], input: string): string[] {
+  return useMemo((): string[] => {
     const names = new Set<string>();
-    logs.forEach((log) =>
-      log.exercises.forEach((ex) => names.add(ex.exerciseName))
-    );
+    sessions.forEach((s) => s.exercises.forEach((ex) => names.add(ex.name)));
     if (!input.trim()) return [];
     const lower = input.toLowerCase();
-    return [...names]
-      .filter((n) => n.toLowerCase().startsWith(lower))
-      .slice(0, 6);
-  }, [logs, input]);
-
-  return suggestions;
+    return [...names].filter((n) => n.toLowerCase().startsWith(lower)).slice(0, 6);
+  }, [sessions, input]);
 }

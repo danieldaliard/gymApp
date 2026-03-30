@@ -9,17 +9,19 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useProgress } from '../../hooks/useProgress';
-import type { WorkoutLog } from '../../models';
+import { useLanguage } from '../../i18n';
+import type { WorkoutSession } from '../../models';
 import styles from './ProgressView.module.css';
 
 interface ProgressViewProps {
-  logs: WorkoutLog[];
+  sessions: WorkoutSession[];
 }
 
-export default function ProgressView({ logs }: ProgressViewProps) {
+export default function ProgressView({ sessions }: ProgressViewProps) {
+  const { t } = useLanguage();
   const [selected, setSelected] = useState('');
   const { chartData, lastWeight, maxWeight, allExerciseNames } = useProgress(
-    logs,
+    sessions,
     selected
   );
 
@@ -27,7 +29,7 @@ export default function ProgressView({ logs }: ProgressViewProps) {
     <div className={styles.container}>
       <div className={styles.selectorWrapper}>
         <label className={styles.label} htmlFor="exercise-select">
-          Ejercicio
+          {t.nav_progress}
         </label>
         <select
           id="exercise-select"
@@ -35,7 +37,7 @@ export default function ProgressView({ logs }: ProgressViewProps) {
           value={selected}
           onChange={(e) => setSelected(e.target.value)}
         >
-          <option value="">-- Seleccioná un ejercicio --</option>
+          <option value="">{t.progress_placeholder}</option>
           {allExerciseNames.map((n) => (
             <option key={n} value={n}>
               {n}
@@ -48,27 +50,25 @@ export default function ProgressView({ logs }: ProgressViewProps) {
         <>
           <div className={styles.stats}>
             <div className={styles.statCard}>
-              <span className={styles.statLabel}>Último peso</span>
+              <span className={styles.statLabel}>{t.progress_last_weight}</span>
               <span className={styles.statValue}>
                 {lastWeight != null ? `${lastWeight} kg` : '—'}
               </span>
             </div>
             <div className={styles.statCard}>
-              <span className={styles.statLabel}>Récord personal</span>
+              <span className={styles.statLabel}>{t.progress_record}</span>
               <span className={styles.statValue}>
                 {maxWeight ? `${maxWeight} kg` : '—'}
               </span>
             </div>
             <div className={styles.statCard}>
-              <span className={styles.statLabel}>Sesiones</span>
+              <span className={styles.statLabel}>{t.progress_sessions}</span>
               <span className={styles.statValue}>{chartData.length}</span>
             </div>
           </div>
 
           {chartData.length < 2 ? (
-            <p className={styles.hint}>
-              Necesitás al menos 2 sesiones para ver el gráfico.
-            </p>
+            <p className={styles.hint}>{t.progress_chart_hint}</p>
           ) : (
             <div className={styles.chart}>
               <ResponsiveContainer width="100%" height={220}>
@@ -109,20 +109,16 @@ export default function ProgressView({ logs }: ProgressViewProps) {
 
           {/* Per-session detail table */}
           <div className={styles.history}>
-            <h3 className={styles.histTitle}>Historial por sesión</h3>
+            <h3 className={styles.histTitle}>{t.history_duration}</h3>
             {chartData
               .slice()
               .reverse()
               .map((d, i) => (
                 <div key={i} className={styles.histRow}>
                   <span className={styles.histDate}>{d.date}</span>
-                  <div className={styles.histSets}>
-                    {d.sets.map((s, j) => (
-                      <span key={j} className={styles.histSet}>
-                        {s.weight}kg×{s.reps}
-                      </span>
-                    ))}
-                  </div>
+                  <span className={styles.histSets}>
+                    {d.maxWeight} kg · {d.totalSets} {t.history_sets}
+                  </span>
                 </div>
               ))}
           </div>
@@ -131,7 +127,7 @@ export default function ProgressView({ logs }: ProgressViewProps) {
 
       {!selected && allExerciseNames.length === 0 && (
         <p className={styles.hint}>
-          Aún no hay registros. ¡Completá tu primer entrenamiento!
+          {t.workout_no_routines_sub}
         </p>
       )}
     </div>

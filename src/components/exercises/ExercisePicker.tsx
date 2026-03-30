@@ -2,42 +2,49 @@ import { useState } from 'react';
 import { useExercises } from '../../hooks/useExercises';
 import { BODY_PART_COLORS } from '../../services/exerciseApiService';
 import type { ApiExercise } from '../../services/exerciseApiService';
-import type { WorkoutLog } from '../../models';
+import type { WorkoutSession } from '../../models';
 import styles from './ExercisePicker.module.css';
 
+export interface PickedExercise {
+  exerciseDbId: string;
+  name: string;
+  gifUrl: string;
+  bodyPart: string;
+}
+
 interface ExercisePickerProps {
-  logs: WorkoutLog[];
-  onSelect: (name: string) => void;
+  sessions: WorkoutSession[];
+  onSelect: (exercise: PickedExercise) => void;
   onClose: () => void;
 }
 
-// Build used-name set for the green dot indicator (same logs passed to hook)
-function getUsedNames(logs: WorkoutLog[]): Set<string> {
+// Build used-name set for the green dot indicator
+function getUsedNames(sessions: WorkoutSession[]): Set<string> {
   const s = new Set<string>();
-  logs.forEach((l) => l.exercises.forEach((e) => s.add(e.exerciseName.toLowerCase())));
+  sessions.forEach((sess) => sess.exercises.forEach((e) => s.add(e.name.toLowerCase())));
   return s;
 }
 
-export function ExercisePicker({ logs, onSelect, onClose }: ExercisePickerProps) {
+export function ExercisePicker({ sessions, onSelect, onClose }: ExercisePickerProps) {
   const {
     exercises, bodyParts,
     search, setSearch,
     selectedBodyPart, setSelectedBodyPart,
     loading, loadingMore, error, retry,
     hasMore, loadMore,
-  } = useExercises(logs);
+  } = useExercises(sessions);
 
   const [freeText, setFreeText] = useState('');
-  const usedNames = getUsedNames(logs);
+  const usedNames = getUsedNames(sessions);
 
   const handleSelect = (ex: ApiExercise) => {
-    onSelect(ex.name);
+    onSelect({ exerciseDbId: ex.exerciseId, name: ex.name, gifUrl: ex.gifUrl, bodyPart: ex.bodyParts[0] ?? '' });
     onClose();
   };
 
   const handleFreeTextSubmit = () => {
     const trimmed = freeText.trim();
-    if (trimmed) { onSelect(trimmed); onClose(); }
+    if (trimmed) { onSelect({ exerciseDbId: 'custom', name: trimmed, gifUrl: '', bodyPart: '' }); onClose(); }
   };
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {

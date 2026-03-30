@@ -1,81 +1,119 @@
 /**
- * Domain types and factory functions.
+ * Domain models — v2 architecture.
  *
- * These interfaces are intentionally shaped to match future .NET API DTOs.
- * When migrating to a backend:
- *   1. Keep the interfaces here (or move to a `types/api.ts` file)
- *   2. Replace factory functions in services with API calls
- *   3. No component/hook changes required
+ * Design principle:
+ *   WorkoutSession snapshots all exercise data (name, gifUrl) at creation time.
+ *   Editing or deleting a Routine never corrupts historical sessions.
+ *
+ * API migration:
+ *   1. Keep these interfaces — they match REST DTOs
+ *   2. Replace factory functions in services/ with API calls
+ *   3. No hook or component changes required
  */
 import { v4 as uuidv4 } from 'uuid';
 
-// ─── Interfaces ────────────────────────────────────────────────────────────
+// ─── Primitives ───────────────────────────────────────────────────────────────
 
 export interface WorkoutSet {
   weight: number;
   reps: number;
 }
 
-export interface Exercise {
-  id: string;
-  name: string;
-}
+// ─── Routine template (editable, no weights/reps stored here) ────────────────
 
 export interface Routine {
   id: string;
   name: string;
-  exercises: Exercise[];
   createdAt: string; // ISO 8601
 }
 
-/** One exercise entry inside a logged workout session */
-export interface LoggedExercise {
-  exerciseId: string;
-  exerciseName: string;
+export interface RoutineDay {
+  id: string;
+  routineId: string;
+  name: string;           // e.g. "Día 1 – Piernas"
+  muscleGroups: string[]; // e.g. ["Piernas", "Glúteos"]
+  exercises: RoutineExercise[];
+  order: number;
+}
+
+/** Exercise slot inside a day — reference only, no sets/weights */
+export interface RoutineExercise {
+  id: string;
+  exerciseDbId: string;  // ExerciseDB id or 'custom'
+  name: string;          // snapshot of name when added
+  gifUrl: string;
+  bodyPart: string;
+  order: number;
+}
+
+// ─── Workout session (immutable execution snapshot) ──────────────────────────
+
+/**
+ * Fully self-contained session record. Safe to keep even after the source
+ * Routine/RoutineDay has been modified or deleted.
+ */
+export interface WorkoutSession {
+  id: string;
+  routineId: string;
+  routineName: string;    // snapshot
+  routineDayId: string;
+  routineDayName: string; // snapshot
+  startedAt: string;      // ISO 8601
+  finishedAt: string;     // ISO 8601 — empty string while in progress
+  exercises: SessionExercise[];
+}
+
+export interface SessionExercise {
+  routineExerciseId: string; // links back for last-weight lookup
+  exerciseDbId: string;
+  name: string;              // snapshot
+  gifUrl: string;
   sets: WorkoutSet[];
 }
 
-/** A completed workout session saved to history */
-export interface WorkoutLog {
-  id: string;
-  routineId: string;
-  routineName: string;
-  date: string; // ISO 8601
-  exercises: LoggedExercise[];
-}
-
-// ─── Factory functions ──────────────────────────────────────────────────────
+// ─── Factory functions ────────────────────────────────────────────────────────
 
 export function createRoutine(name: string): Routine {
-  return {
-    id: uuidv4(),
-    name,
-    exercises: [],
-    createdAt: new Date().toISOString(),
-  };
+  return { id: uuidv4(), name, createdAt: new Date().toISOString() };
 }
 
-export function createExercise(name: string): Exercise {
+export function createRoutineDay(
+  routineId: string,
+  name: string,
+  order: number,
+): RoutineDay {
+  return { id: uuidv4(), routineId, name, muscleGroups: [], exercises: [], order };
+}
+
+export function createRoutineExercise(
+  exerciseDbId: string,
+  name: string,
+  gifUrl: string,
+  bodyPart: string,
+  order: number,
+): RoutineExercise {
+  return { id: uuidv4(), exerciseDbId, name, gifUrl, bodyPart, order };
+}
+
+export function createWorkoutSession(routine: Routine, day: RoutineDay): WorkoutSession {
   return {
     id: uuidv4(),
-    name,
+    routineId: routine.id,
+    routineName: routine.name,
+    routineDayId: day.id,
+    routineDayName: day.name,
+    startedAt: new Date().toISOString(),
+    finishedAt: '',
+    exercises: day.exercises.map((ex) => ({
+      routineExerciseId: ex.id,
+      exerciseDbId: ex.exerciseDbId,
+      name: ex.name,
+      gifUrl: ex.gifUrl,
+      sets: [],
+    })),
   };
 }
 
 export function createSet(weight = 0, reps = 12): WorkoutSet {
   return { weight, reps };
-}
-
-export function createWorkoutLog(routine: Routine): WorkoutLog {
-  return {
-    id: uuidv4(),
-    routineId: routine.id,
-    routineName: routine.name,
-    date: new Date().toISOString(),
-    exercises: routine.exercises.map((ex) => ({
-      exerciseId: ex.id,
-      exerciseName: ex.name,
-      sets: [],
-    })),
-  };
 }

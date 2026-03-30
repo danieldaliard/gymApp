@@ -1,21 +1,21 @@
 /**
- * Storage Service — single abstraction layer over localStorage.
+ * Storage Service v2 — single abstraction layer over localStorage.
  *
- * ──── API Migration Checklist ────────────────────────────────────────────────
- * To replace localStorage with a .NET REST API:
- *   1. Make each function async and return Promise<T>
- *   2. Replace localStorage calls with fetch / axios calls
- *   3. Update hooks to await these calls (add loading/error state)
- *   4. The interfaces in models/index.ts already match typical API shapes
- * ─────────────────────────────────────────────────────────────────────────────
+ * Uses v2 keys to avoid conflicts with any v1 data.
+ *
+ * API migration:
+ *   1. Make each method async → Promise<T>
+ *   2. Replace localStorage calls with fetch/axios
+ *   3. Hooks already have loading/error state patterns ready
  */
-import type { Routine, WorkoutLog } from '../models';
+import type { Routine, RoutineDay, WorkoutSession } from '../models';
 
-const PREFIX = 'gymtracker_';
+const PREFIX = 'gymtracker_v2_';
 
 const KEYS = {
   ROUTINES:     `${PREFIX}routines`,
-  WORKOUT_LOGS: `${PREFIX}workout_logs`,
+  ROUTINE_DAYS: `${PREFIX}routine_days`,
+  SESSIONS:     `${PREFIX}sessions`,
 } as const;
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -37,34 +37,23 @@ function persist<T>(key: string, value: T): void {
 
 export const routineService = {
   getAll: (): Routine[] => load<Routine[]>(KEYS.ROUTINES, []),
-
   save: (routines: Routine[]): void => persist(KEYS.ROUTINES, routines),
-
-  getById: (id: string): Routine | null =>
-    load<Routine[]>(KEYS.ROUTINES, []).find((r) => r.id === id) ?? null,
 };
 
-// ─── Workout Log Service ─────────────────────────────────────────────────────
+// ─── Routine Day Service ──────────────────────────────────────────────────────
 
-export const workoutLogService = {
-  getAll: (): WorkoutLog[] => load<WorkoutLog[]>(KEYS.WORKOUT_LOGS, []),
+export const routineDayService = {
+  getAll: (): RoutineDay[] => load<RoutineDay[]>(KEYS.ROUTINE_DAYS, []),
+  save: (days: RoutineDay[]): void => persist(KEYS.ROUTINE_DAYS, days),
+};
 
-  save: (logs: WorkoutLog[]): void => persist(KEYS.WORKOUT_LOGS, logs),
+// ─── Session Service ──────────────────────────────────────────────────────────
 
-  add: (log: WorkoutLog): void => {
-    const logs = load<WorkoutLog[]>(KEYS.WORKOUT_LOGS, []);
-    persist(KEYS.WORKOUT_LOGS, [log, ...logs]);
+export const sessionService = {
+  getAll: (): WorkoutSession[] => load<WorkoutSession[]>(KEYS.SESSIONS, []),
+  save: (sessions: WorkoutSession[]): void => persist(KEYS.SESSIONS, sessions),
+  add: (session: WorkoutSession): void => {
+    const all = load<WorkoutSession[]>(KEYS.SESSIONS, []);
+    persist(KEYS.SESSIONS, [session, ...all]);
   },
-
-  getByRoutineId: (routineId: string): WorkoutLog[] =>
-    load<WorkoutLog[]>(KEYS.WORKOUT_LOGS, []).filter(
-      (l) => l.routineId === routineId
-    ),
-
-  getByExerciseName: (name: string): WorkoutLog[] =>
-    load<WorkoutLog[]>(KEYS.WORKOUT_LOGS, []).filter((l) =>
-      l.exercises.some(
-        (e) => e.exerciseName.toLowerCase() === name.toLowerCase()
-      )
-    ),
 };

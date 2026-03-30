@@ -1,50 +1,39 @@
 import { useNavigate } from 'react-router-dom';
-import WorkoutSession from '../components/workout/WorkoutSession';
-import type { Routine, WorkoutLog } from '../models';
+import WorkoutSessionComponent from '../components/workout/WorkoutSession';
+import { useLanguage } from '../i18n';
+import type { Routine, RoutineDay, WorkoutSession } from '../models';
 import styles from './Page.module.css';
 
 interface WorkoutPageProps {
   routines: Routine[];
-  activeSession: WorkoutLog | null;
-  logs: WorkoutLog[];
-  onStartWorkout: (routine: Routine) => void;
-  onAddSet: (exerciseId: string, weight: number, reps: number) => void;
-  onRemoveSet: (exerciseId: string, setIndex: number) => void;
+  days: RoutineDay[];
+  activeSession: WorkoutSession | null;
+  onStartWorkout: (routine: Routine, day: RoutineDay) => void;
+  onAddSet: (routineExerciseId: string, weight: number, reps: number) => void;
+  onRemoveSet: (routineExerciseId: string, setIndex: number) => void;
   onFinish: () => void;
   onCancel: () => void;
+  lastWeightFor: (routineExerciseId: string) => number | undefined;
+  lastSessionForDay: (dayId: string) => WorkoutSession | undefined;
 }
 
-/** Format an ISO date string as a friendly relative label */
 function formatRelative(isoDate: string): string {
   const d = new Date(isoDate);
-  const now = new Date();
-  const diffDays = Math.floor((now.getTime() - d.getTime()) / 86400000);
+  const diffDays = Math.floor((Date.now() - d.getTime()) / 86400000);
   if (diffDays === 0) return 'Hoy';
   if (diffDays === 1) return 'Ayer';
   if (diffDays < 7) return `Hace ${diffDays} días`;
   return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'short' });
 }
 
-export default function WorkoutPage({ routines, activeSession, onStartWorkout, onAddSet, onRemoveSet, onFinish, onCancel, logs }: WorkoutPageProps) {
+export default function WorkoutPage({
+  routines, days,
+  activeSession,
+  onStartWorkout, onAddSet, onRemoveSet, onFinish, onCancel,
+  lastWeightFor, lastSessionForDay,
+}: WorkoutPageProps) {
+  const { t } = useLanguage();
   const navigate = useNavigate();
-
-  /** Last weight used per exercise name */
-  const lastWeights: Record<string, number> = {};
-  logs.forEach((log) => {
-    log.exercises.forEach((ex) => {
-      if (ex.sets.length > 0 && !(ex.exerciseName in lastWeights)) {
-        lastWeights[ex.exerciseName] = Math.max(...ex.sets.map((s) => s.weight));
-      }
-    });
-  });
-
-  /** Most recent log date per routine */
-  const lastDoneByRoutine: Record<string, string> = {};
-  logs.forEach((log) => {
-    if (!lastDoneByRoutine[log.routineId]) {
-      lastDoneByRoutine[log.routineId] = log.date;
-    }
-  });
 
   const handleFinish = () => {
     onFinish();
@@ -54,9 +43,9 @@ export default function WorkoutPage({ routines, activeSession, onStartWorkout, o
   if (activeSession) {
     return (
       <div className={styles.page}>
-        <WorkoutSession
+        <WorkoutSessionComponent
           session={activeSession}
-          lastWeights={lastWeights}
+          lastWeightFor={lastWeightFor}
           onAddSet={onAddSet}
           onRemoveSet={onRemoveSet}
           onFinish={handleFinish}
@@ -66,54 +55,72 @@ export default function WorkoutPage({ routines, activeSession, onStartWorkout, o
     );
   }
 
-  return (
-    <div className={styles.page}>
-      {routines.length === 0 ? (
+  if (routines.length === 0) {
+    return (
+      <div className={styles.page}>
         <div className={styles.emptyState}>
           <span className={styles.emptyIcon}>💪</span>
-          <h3 className={styles.emptyTitle}>¡Creá tu primera rutina!</h3>
-          <p className={styles.emptyText}>
-            Para empezar a entrenar, primero necesitás crear una rutina con al menos un ejercicio.
-          </p>
-          <a href="/" className={styles.emptyAction}>Ir a Rutinas →</a>
+          <h3 className={styles.emptyTitle}>{t.workout_no_routines_title}</h3>
+          <p className={styles.emptyText}>{t.workout_no_routines_sub}</p>
+          <a href="/" className={styles.emptyAction}>{t.go_to_routines}</a>
         </div>
-      ) : (
-        <>
-          <p className={styles.sub}>Seleccioná la rutina de hoy:</p>
-          <div className={styles.routineGrid}>
-            {routines.map((r) => {
-              const lastDate = lastDoneByRoutine[r.id];
-              return (
-                <button
-                  key={r.id}
-                  className={styles.routineBtn}
-                  onClick={() => onStartWorkout(r)}
-                  disabled={r.exercises.length === 0}
-                >
-                  <span className={styles.routineIcon}>💪</span>
-                  <div className={styles.routineInfo}>
-                    <span className={styles.routineName}>{r.name}</span>
-                    <span className={styles.routineMeta}>
-                      {r.exercises.length} ejercicio{r.exercises.length !== 1 ? 's' : ''}
-                      {lastDate && (
-                        <span className={styles.lastDone}> · {formatRelative(lastDate)}</span>
-                      )}
-                    </span>
-                  </div>
-                  {lastDate && (
-                    <span className={styles.repeatBadge} title="Repetir última sesión">↩</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+      </div>
+    );
+  }
 
-          <p className={styles.hint}>
-            💡 Al iniciar una rutina, el último peso usado de cada ejercicio se pre-carga automáticamente.
-          </p>
-        </>
-      )}
+  return (
+    <div className={styles.page}>
+      <p className={styles.sub}>{t.workout_select_prompt}</p>
+
+      {routines.map((routine) => {
+        const routineDays = days
+          .filter((d) => d.routineId === routine.id)
+          .sort((a, b) => a.order - b.order);
+
+        return (
+          <div key={routine.id} className={styles.routineSection}>
+            <h3 className={styles.routineSectionTitle}>{routine.name}</h3>
+
+            {routineDays.length === 0 ? (
+              <p className={styles.hint}>{t.workout_no_days}</p>
+            ) : (
+              <div className={styles.routineGrid}>
+                {routineDays.map((day) => {
+                  const lastSession = lastSessionForDay(day.id);
+                  const exerciseCount = day.exercises.length;
+                  const disabled = exerciseCount === 0;
+                  return (
+                    <button
+                      key={day.id}
+                      className={styles.routineBtn}
+                      onClick={() => onStartWorkout(routine, day)}
+                      disabled={disabled}
+                    >
+                      <span className={styles.routineIcon}>💪</span>
+                      <div className={styles.routineInfo}>
+                        <span className={styles.routineName}>{day.name}</span>
+                        <span className={styles.routineMeta}>
+                          {exerciseCount} {exerciseCount !== 1 ? t.exercises : t.exercise_sing}
+                          {(day.muscleGroups ?? []).length > 0 && (
+                            <span className={styles.lastDone}> · {day.muscleGroups!.join(', ')}</span>
+                          )}
+                        </span>
+                        {lastSession && (
+                          <span className={styles.lastDone}>
+                            {formatRelative(lastSession.startedAt)}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
+
 

@@ -58,3 +58,26 @@
   background: var(--accent-light);
   transform: rotate(20deg);
 }
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.langBtn {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 10px;
+  height: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.langBtn:hover { background: var(--accent-light); color: var(--accent); }
